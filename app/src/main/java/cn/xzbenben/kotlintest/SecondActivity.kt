@@ -17,13 +17,35 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
+class MyFinder(v: View) : Finder(v) {
+    @Bind(1000)
+    var btn: Button? = null
+
+    @Bind(1001)
+    var rcv: RecyclerView? = null
+}
+class DataTest {
+    var a = "fewfew"
+    var headerData = HeaderData()
+    var arr = arrayOf(IT0("test", "1"), IT("as", "2"), IT("324", "3")).asList()
+//    var arr = arrayOf(1, 2, 3).asList()
+}
+
+class IT0(var data: String, var text: String)
+class IT(var name: String, var value: String)
+class HeaderData() {
+    var a = "this is header"
+}
+
+
+
+
 class MainActivity2 : AppCompatActivity(), View.OnClickListener {
 
     var mf: MyFinder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         val createView = MyActivityUI2().createView(AnkoContextImpl(this, this, false))
         setContentView(createView)

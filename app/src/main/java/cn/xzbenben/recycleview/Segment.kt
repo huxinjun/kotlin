@@ -13,6 +13,7 @@ open class Segment<T>(var ctx: Context) {
 
     //绑定
     var bindCb: (BindingContext<T>.() -> Unit)? = null
+
     fun bind(bind: BindingContext<T>.() -> Unit) {
         this.bindCb = bind
     }
@@ -22,8 +23,10 @@ open class Segment<T>(var ctx: Context) {
     }
 }
 
-fun <T> segment(seg: Segment<T>) {
-
+fun <T> segment(ctx: Context, func: Segment<T>.() -> Unit): Segment<T> {
+    val segment = Segment<T>(ctx)
+    segment.func()
+    return segment
 }
 
 /**
