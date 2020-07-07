@@ -6,8 +6,11 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import cn.xzbenben.viewdsl.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.pulp.viewdsl.data
+import org.pulp.viewdsl.finder
+import org.pulp.viewdsl.segment
+import org.pulp.viewdsl.templete
 
 class MainActivity : AppCompatActivity() {
 

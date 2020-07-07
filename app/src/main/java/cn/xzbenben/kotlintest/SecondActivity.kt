@@ -11,11 +11,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.xzbenben.viewdsl.*
 import cn.xzbenben.test.toString
 import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.pulp.viewdsl.*
 
 class MyFinder(v: View) : Finder(v) {
     @Bind(1000)
@@ -118,7 +118,8 @@ class MainActivity2 : AppCompatActivity(), View.OnClickListener {
 //                    }
 //                }
 
-                finder(object : Finder(this) {
+                finder(object :
+                    Finder(this) {
                     @Bind(R.id.tv_txt)
                     var tv: TextView? = null
                 }) {

@@ -1,4 +1,4 @@
-package cn.xzbenben.viewdsl
+package org.pulp.viewdsl
 
 import android.content.Context
 import android.view.View

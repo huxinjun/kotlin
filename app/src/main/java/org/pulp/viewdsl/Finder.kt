@@ -1,4 +1,4 @@
-package cn.xzbenben.viewdsl
+package org.pulp.viewdsl
 
 import android.util.Log
 import android.util.SparseArray
@@ -26,7 +26,9 @@ open class Finder(protected var v: View) {
         if (history[id] != null)
             return history[id] as T
         val v: T = v.findViewById(id)
-            ?: throw RuntimeException("finder not find any view by id ${searchIdNameFromR(id)}")
+            ?: throw RuntimeException("finder not find any view by id ${searchIdNameFromR(
+                id
+            )}")
         history.put(id, v)
         return v
     }
@@ -58,7 +60,9 @@ inline fun <T : Finder> finder(factory: T, function: T.() -> Unit): T {
             try {
                 it.set(factory, view)
             } catch (e: Exception) {
-                throw RuntimeException("view type different,id=${searchIdNameFromR(bindAnno.id)},declare view type[${it.type}],find view type[${view::class.java}]")
+                throw RuntimeException("view type different,id=${searchIdNameFromR(
+                    bindAnno.id
+                )},declare view type[${it.type}],find view type[${view::class.java}]")
             }
 
         }
