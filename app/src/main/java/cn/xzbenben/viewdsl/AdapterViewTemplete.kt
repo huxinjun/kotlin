@@ -1,4 +1,4 @@
-package cn.xzbenben.recycleview
+package cn.xzbenben.viewdsl
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +8,8 @@ import android.widget.BaseAdapter
 
 
 class ItemViewAdapter<T>(var set: LvSegmentSets) : BaseAdapter() {
+
+    constructor(init: () -> LvSegmentSets) : this(init())
 
     @Suppress("UNCHECKED_CAST")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {

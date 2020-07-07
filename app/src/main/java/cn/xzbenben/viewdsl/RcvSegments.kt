@@ -1,12 +1,15 @@
-package cn.xzbenben.recycleview
+package cn.xzbenben.viewdsl
 
 import android.content.Context
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-
-class Data(p: Int, d: Any?) {
+/**
+ * type info,include pos and data
+ * Created by xinjun on 2020/7/7 10:21
+ */
+class Info(p: Int, d: Any?) {
     var pos: Int = p
         private set
         get
@@ -26,12 +29,12 @@ class SegmentSets(var ctx: Context) {
     private var footerTypeIndex = footerInitIndex
 
 
-    var data: List<*> = emptyList<Any>()
-    var typeBlock: (Data.() -> Int)? = null
+    var data: MutableList<Any> = mutableListOf()
+    var typeBlock: (Info.() -> Int)? = null
     var mSegments = mutableMapOf<Int, Segment<*>>()
 
 
-    fun type(block: Data.() -> Int) {
+    fun type(block: Info.() -> Int) {
         this.typeBlock = block
     }
 
@@ -109,29 +112,36 @@ class SegmentSets(var ctx: Context) {
 }
 
 
-fun <T> RecyclerViewAdpt<T>.data(data: List<T>) {
-    segmentSets.data = data
-    notifyDataSetChanged()
+inline fun RecyclerView.templete(crossinline init: SegmentSets.() -> Unit) {
+    this.adapter = RecyclerViewAdpt<Any> {
+        val set = SegmentSets(context)
+        set.init()
+        set
+    }
 }
 
-inline fun RecyclerView.templete(init: SegmentSets.() -> Unit) {
-    val set = SegmentSets(context)
-    set.init()
-    this.adapter = RecyclerViewAdpt<Any>(set)
-
+inline fun RecyclerView.data(init: () -> List<Any>) {
+    data(false, init)
 }
 
-
-inline fun <T> RecyclerView.data(init: () -> List<T>) {
+inline fun RecyclerView.data(append: Boolean, init: () -> List<Any>) {
     if (adapter == null)
         throw RuntimeException("data invoke must after templete{...}")
     @Suppress("UNCHECKED_CAST")
-    (adapter as RecyclerViewAdpt<T>).data(init())
+    val adpt = adapter as RecyclerViewAdpt<*>
+    with(adpt) {
+        if (!append) segmentSets.data.clear()
+        segmentSets.data.addAll(init())
+        notifyDataSetChanged()
+    }
+
 }
 
 
 //**************************************
-
+/**
+ * get a header view by position from RecyclerView
+ */
 fun RecyclerView.header(i: Int): View? {
     if (adapter == null)
         throw RuntimeException("header invoke must after with templete{...}")
@@ -147,6 +157,9 @@ fun RecyclerView.header(i: Int): View? {
     return null
 }
 
+/**
+ * get a footer view by position from RecyclerView
+ */
 fun RecyclerView.footer(i: Int): View? {
     if (adapter == null)
         throw RuntimeException("footer invoke must after with templete{...}")

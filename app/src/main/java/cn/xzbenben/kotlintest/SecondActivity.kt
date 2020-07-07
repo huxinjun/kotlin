@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.xzbenben.recycleview.*
+import cn.xzbenben.viewdsl.*
 import cn.xzbenben.test.toString
 import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
@@ -107,7 +107,7 @@ class MainActivity2 : AppCompatActivity(), View.OnClickListener {
             header(0).safe {
                 finder(this) {
                     find<RecyclerView>(R.id.rcv_inner) {
-                        data { arrayOf("的测温", "费废物废物", "会议厅局医院").asList() }
+                        data(true) { arrayOf("的测温", "费废物废物", "会议厅局医院").asList() }
                     }
                 }
             }

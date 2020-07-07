@@ -1,4 +1,4 @@
-package cn.xzbenben.recycleview
+package cn.xzbenben.viewdsl
 
 import android.content.Context
 import android.view.View

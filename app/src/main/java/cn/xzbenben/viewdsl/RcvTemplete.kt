@@ -1,4 +1,4 @@
-package cn.xzbenben.recycleview
+package cn.xzbenben.viewdsl
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,6 +27,8 @@ class VH<T>(v: View) : RecyclerView.ViewHolder(v) {
  */
 class RecyclerViewAdpt<T>(var segmentSets: SegmentSets) : RecyclerView.Adapter<VH<T>>() {
 
+    constructor(init: () -> SegmentSets) : this(init())
+
     override fun getItemViewType(position: Int): Int {
         segmentSets.run {
             //Log.i("xinjun", "pos=$position,isHeader=${isHeader(position)},isFooter=${isFooter(position)},headersize=${headerSize()},datasize=${data.size}")
@@ -37,7 +39,7 @@ class RecyclerViewAdpt<T>(var segmentSets: SegmentSets) : RecyclerView.Adapter<V
         }
         val realPos = position - segmentSets.headerSize()
 //        Log.i("xinjun", "pos=$position,realpos=$realPos,headersize=${set.headerSize()}")
-        val data = Data(realPos, segmentSets.data.get(realPos))
+        val data = Info(realPos, segmentSets.data.get(realPos))
         if (segmentSets.typeBlock == null)
             return 0
         val viewType = segmentSets.typeBlock!!(data)
@@ -56,10 +58,13 @@ class RecyclerViewAdpt<T>(var segmentSets: SegmentSets) : RecyclerView.Adapter<V
 
         }
 
-        var a=segmentSets.isHeader(viewType.toFloat())
-        var b=segmentSets.isFooter(viewType.toFloat())
+        val a = segmentSets.isHeader(viewType.toFloat())
+        val b = segmentSets.isFooter(viewType.toFloat())
 
-        Log.i("xinjun", "onCreateViewHolder.viewType=$viewType,viewInstance=$view,segment=$segment,isHeader=$a,isFooter=$b")
+        Log.i(
+            "xinjun",
+            "onCreateViewHolder.viewType=$viewType,viewInstance=$view,segment=$segment,isHeader=$a,isFooter=$b"
+        )
         segmentSets.run {
             if (isHeader(viewType.toFloat()) || isFooter(viewType.toFloat())) {
                 segment?.viewInstance = view

@@ -1,4 +1,4 @@
-package cn.xzbenben.recycleview
+package cn.xzbenben.viewdsl
 
 import android.view.View
 
@@ -10,6 +10,4 @@ inline fun <T : View> T?.safe(function: T.() -> Unit) {
 }
 
 
-fun Int.abs(): Int {
-    return kotlin.math.abs(this)
-}
+fun Int.abs(): Int = kotlin.math.abs(this)

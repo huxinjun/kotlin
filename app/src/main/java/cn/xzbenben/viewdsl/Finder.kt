@@ -1,4 +1,4 @@
-package cn.xzbenben.recycleview
+package cn.xzbenben.viewdsl
 
 import android.util.Log
 import android.util.SparseArray
@@ -13,11 +13,13 @@ import java.lang.RuntimeException
 annotation class Bind(val id: Int)
 
 
-
+/**
+ * view finder
+ * Created by xinjun on 2020/7/7 10:26
+ */
 open class Finder(protected var v: View) {
 
     private var history = SparseArray<View>()
-    private var cbs = HashMap<View, Any>()
 
     fun <T : View> find(id: Int): T {
         @Suppress("UNCHECKED_CAST")
