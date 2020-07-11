@@ -1,60 +1,38 @@
 package cn.xzbenben.kotlintest
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.widget.Button
-import android.widget.ListView
-import android.widget.TextView
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.pulp.viewdsl.data
-import org.pulp.viewdsl.finder
-import org.pulp.viewdsl.segment
-import org.pulp.viewdsl.templete
 
 class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        val from = LayoutInflater.from(this).inflate(R.layout.activity_main, null, false)
-        setContentView(from)
-
-        var lv: ListView? = null
-
-        finder(from) {
-            find<ListView>(R.id.lv) {
-
-                templete {
-
-                    item {
-                        segment<Int>(ctx) {
-                            layoutId = R.layout.layout2
-                            bind {
-                                find<TextView>(R.id.tv_txt).setText(data.toString())
-                            }
-
-
-                        }
-                    }
-                }
-
-                lv = this
-
-
-            }
-
-            find<Button>(R.id.btn) {
-                onClick {
-                    lv?.data(true) {
-                        MutableList(5) { it }
-                    }
-                }
-            }
-        }
 
     }
+
+    fun turnAichang(view: View) {
+        val uri =
+            Uri.parse("aichang://djturn?data_type=51&banzouid=86403154")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+
+
+    }
+
+    fun turnAichangNoBzid(view: View) {
+        val uri =
+            Uri.parse("aichang://djturn?data_type=51&bzid=0")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
+
+
+    }
+
 }
-
-
