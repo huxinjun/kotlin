@@ -133,7 +133,7 @@ class MainActivity2 : AppCompatActivity(), View.OnClickListener {
 
 }
 
-class SegHeader1(ctx: Context) : Segment<IT>() {
+class SegHeader1(ctx: Context) : SegmentDataNullable<IT>() {
     init {
         layout(R.layout.layout1)
         bind {
@@ -172,7 +172,7 @@ class SegHeader1Item(ctx: Context) : Segment<Any>() {
     }
 }
 
-class SegHeader2(ctx: Context) : Segment<IT>() {
+class SegHeader2(ctx: Context) : SegmentDataNullable<IT>() {
     init {
         layout(R.layout.layout1)
         bind {
@@ -188,7 +188,7 @@ class SegHeader2(ctx: Context) : Segment<IT>() {
     }
 }
 
-class SegFooter(ctx: Context) : Segment<IT>() {
+class SegFooter(ctx: Context) : SegmentDataNullable<IT>() {
     init {
         layout(R.layout.layout1)
         bind {

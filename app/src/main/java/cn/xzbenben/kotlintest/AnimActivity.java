@@ -8,6 +8,8 @@ import android.view.animation.RotateAnimation;
 
 import androidx.annotation.Nullable;
 
+import cn.xzbenben.test.CompanionTest;
+
 public class AnimActivity extends Activity {
 
 
