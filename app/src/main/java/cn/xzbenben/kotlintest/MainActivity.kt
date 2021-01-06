@@ -35,4 +35,22 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun turnAichangCarsShop(view: View) {
+        val uri =
+            Uri.parse("aichang://aichang?data_type=52")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
+
+
+    }
+
+    fun turnFrontLine(view: View) {
+        val uri =
+            Uri.parse("frontline://xxx?action=0")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
+
+
+    }
+
 }

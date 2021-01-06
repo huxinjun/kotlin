@@ -28,4 +28,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:text="跳转爱唱座驾商场"
+        android:onClick="turnAichangCarsShop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:text="跳转前线app"
+        android:onClick="turnFrontLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>

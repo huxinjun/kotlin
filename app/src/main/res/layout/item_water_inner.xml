@@ -10,23 +10,38 @@
 
 
     <TextView
-        android:id="@+id/tv_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
-        android:text="03-15"
-        android:textColor="#000"
-        android:textSize="14dp" />
-
-
-    <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="70dp"
-        android:text="资金转出"
-        android:textColor="#000"
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxWidth="160dp"
+        android:text="代发工资 -北京众智创世科技有限公司"
+        android:textColor="#37414d"
         android:textSize="14dp" />
+
+    <TextView
+        android:id="@+id/tv_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_title"
+        android:layout_alignLeft="@+id/tv_title"
+        android:layout_marginTop="10dp"
+        android:text="资金转出"
+        android:textColor="#8d97a4"
+        android:textSize="12dp" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_desc"
+        android:layout_alignLeft="@+id/tv_desc"
+        android:text="18:00"
+        android:layout_marginTop="3dp"
+        android:textColor="#ced3d9"
+        android:textSize="12dp" />
+
 
     <LinearLayout
         android:id="@+id/ll_money"
@@ -43,60 +58,31 @@
             android:layout_height="wrap_content"
             android:text="+"
             android:textColor="#000"
-            android:textSize="12dp" />
+            android:textSize="16dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_money"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="5000.00"
-            android:textColor="#000"
-            android:textSize="14dp" />
+            android:textColor="#37414d"
+            android:textSize="16dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
-
-
-    <View
-        android:id="@+id/v_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/tv_date"
-        android:layout_marginTop="7dp" />
-
-
-    <TextView
-        android:id="@+id/tv_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/v_line"
-        android:layout_alignLeft="@+id/tv_date"
-        android:layout_marginBottom="12.5dp"
-        android:paddingLeft="5dp"
-        android:text="18:00"
-        android:textColor="#a1a2a3"
-        android:textSize="12dp" />
-
-
-    <TextView
-        android:id="@+id/tv_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/v_line"
-        android:layout_alignLeft="@+id/tv_title"
-        android:text="资金转出"
-        android:textColor="#a1a2a3"
-        android:textSize="12dp" />
 
 
     <TextView
         android:id="@+id/tv_remain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/v_line"
+        android:layout_below="@+id/ll_money"
         android:layout_alignRight="@+id/ll_money"
         android:paddingRight="10dp"
+        android:layout_marginTop="5dp"
         android:text="余额:  12008.88"
-        android:textColor="#a1a2a3"
+        android:textColor="#8d97a4"
         android:textSize="12dp" />
 
 
@@ -104,6 +90,7 @@
         android:id="@+id/iv_line_botton"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="12.5dp"
         android:layout_below="@+id/tv_time"
         android:background="#f6f6f6" />
 

@@ -1,9 +1,11 @@
 package cn.xzbenben.water
 
 import android.content.Context
+import android.widget.Toast
 import okhttp3.logging.HttpLoggingInterceptor
 import org.pulp.fastapi.Setting
 import org.pulp.fastapi.i.*
+import org.pulp.fastapi.model.Error
 
 class ApiSetting(var ctx: Context) : Setting {
     override fun onGetPathConverter(): PathConverter? {
@@ -26,6 +28,10 @@ class ApiSetting(var ctx: Context) : Setting {
         return 10 * 1024
     }
 
+    override fun onToastError(error: Error) {
+        Toast.makeText(ctx, error.msg, Toast.LENGTH_SHORT).show()
+    }
+
     override fun onGetCommonParams(): MutableMap<String, String>? {
         return null
     }
@@ -42,9 +48,6 @@ class ApiSetting(var ctx: Context) : Setting {
         return 3000
     }
 
-    override fun onErrorCode2String(code: Int): String? {
-        return null
-    }
 
     override fun onCustomLoggerLevel(): HttpLoggingInterceptor.Level? {
         return null
@@ -52,6 +55,10 @@ class ApiSetting(var ctx: Context) : Setting {
 
     override fun onGetCacheDir(): String {
         return "fastapi"
+    }
+
+    override fun onGetCommonHeaders(): MutableMap<String, String>? {
+        return null
     }
 
     override fun onGetReadTimeout(): Int {

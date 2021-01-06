@@ -1,17 +1,15 @@
 package cn.xzbenben.test
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 fun postItem(item: Item): PostResult {
-    println("3")
+//    println("3")
     val token = requestToken()
-    println("4")
+//    println("4")
     val post = createPost(token, item)
-    println("4")
+//    println("4")
     val postResult = processPost(post)
-    println("5")
+//    println("5")
     return postResult
 }
 
@@ -35,18 +33,18 @@ class Item {
 }
 
 class PostResult {
-
 }
 
 fun main() {
-    println("1")
-    GlobalScope.launch {
+    println("main start:${Thread.currentThread().name}")
+    GlobalScope.launch(Dispatchers.Unconfined) {
 //        delay(1000)
-        println("2")
+        println("thread running:${Thread.currentThread().name}")
         postItem(Item())
-        println("6")
     }
-    println("7")
+    println("main end:${Thread.currentThread().name}")
     Thread.sleep(2000)
 
 }
+
+
