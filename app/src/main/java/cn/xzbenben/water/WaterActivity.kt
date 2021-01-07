@@ -45,13 +45,15 @@ class WaterActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_water)
 
+        rl_to_top.visibility = View.INVISIBLE
+
         API.init(ApiSetting(this.applicationContext))
 
-        API.get(this, WaterApi::class.java).getData().success {
+        API.get(this, WaterApi::class.java).getData().success { result ->
 
 
-            tv_card?.text = it.card
-            tv_title.text = it.title
+            tv_card?.text = result.card
+            tv_title.text = result.title
 
             rcv?.run {
                 template {
@@ -62,9 +64,30 @@ class WaterActivity : AppCompatActivity() {
                 }
                 layoutManager = LinearLayoutManager(context)
 
-                data { it.datas!! }
+                data { result.datas!! }
 
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        val layoutManager = layoutManager!! as LinearLayoutManager
+                        val findFirstVisibleItemPosition =
+                            layoutManager.findFirstVisibleItemPosition()
 
+                        rl_to_top.visibility =
+                            if (findFirstVisibleItemPosition == 0) View.INVISIBLE
+                            else View.VISIBLE
+
+                        result.datas?.let {
+                            val data = it[findFirstVisibleItemPosition]
+                            tv_curr_date.text = data.key
+                        }
+                    }
+                })
+
+            }
+
+            rl_to_top.setOnClickListener {
+                rcv.smoothScrollToPosition(0)
             }
 
 
@@ -119,6 +142,12 @@ class ItemSeg : Segment<Data>() {
 
                 }
 
+                data.items?.forEach { item ->
+                    data.key?.let { key ->
+                        item.dataTime = key.split("-")[0] + "-" + item.date + " " + item.time
+                    }
+
+                }
 
                 data {
                     data.items!!
@@ -155,9 +184,9 @@ class ItemInnerSeg : Segment<Item>() {
         bindCtx.data.run {
             tv_title.text = title
             tv_money.text = money
-            tv_time.text = time
+            tv_time.text = dataTime
             tv_desc.text = desc
-            tv_remain.text = "余额 ：$remain"
+            tv_remain.text = "余额：$remain"
 
 //                    if (pos == size - 1)
 //                        iv_line_botton.visibility = View.GONE
@@ -214,6 +243,7 @@ class Data {
 class Item {
     var date: String? = null
     var time: String? = null
+    var dataTime: String? = null
     var title: String? = null
     var desc: String? = null
     var isIn: Boolean = false
