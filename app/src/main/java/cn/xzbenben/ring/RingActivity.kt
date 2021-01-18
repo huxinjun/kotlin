@@ -8,17 +8,16 @@ import kotlinx.android.synthetic.main.activity_ring.*
 
 class RingActivity : AppCompatActivity() {
 
-    var p = 720
+    var p = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ring)
-        progress.progress = p
     }
 
     fun addProgress(view: View) {
-        p += 90
-        progress.setProgressWithAnim(p)
+        p += 0.3f
+        progress.setProgress(p, 1000)
     }
 
 }

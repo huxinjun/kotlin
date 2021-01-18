@@ -2,14 +2,13 @@ package cn.xzbenben.ring;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PointF;
-import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
@@ -19,114 +18,137 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import cn.xzbenben.kotlintest.R;
+
 /**
  * 圆环进度
  * Created by xinjun on 1/7/21 4:32 PM
  */
 public class ProgressRing extends View {
-    int ringWidth = 60;
-    Paint paint;
-    Shader sweepGradient;
-    private static int[] colorsForSingle = new int[]{
-            Color.parseColor("#14bcbd"),
-            Color.parseColor("#00cca1"),
-            Color.parseColor("#00de9f"),
-            Color.parseColor("#00f08d"),
-            Color.parseColor("#00ff84"),
-    };
-    private static int[] colorsForDouble = new int[]{
-            Color.parseColor("#00ff84"),
-            Color.parseColor("#7bf868"),
-            Color.parseColor("#ffee5d"),
-            Color.parseColor("#84d58a"),
-            Color.parseColor("#14bcbd"),
+
+    private float progress;
+    private int radius;
+    private RectF rect;
+    private PointF center;
+
+    private Paint emptyPaint;
+    private Paint ringPaint;
+    private Paint maskPaint;
+
+    private ValueAnimator progressAnimator;
+
+    private static int[] colors = new int[]{
+            Color.parseColor("#4eb2b2"),
+            Color.parseColor("#54bcad"),
+            Color.parseColor("#62d3a6"),
+            Color.parseColor("#6be0a4"),
+
+            Color.parseColor("#72ee9e"),
+            Color.parseColor("#69dea2"),
+            Color.parseColor("#5dcaa8"),
+            Color.parseColor("#4eb2b2"),
     };
 
     public ProgressRing(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ProgressRing);
+        progress = typedArray.getFloat(R.styleable.ProgressRing_progress, 0);
+        radius = typedArray.getDimensionPixelSize(R.styleable.ProgressRing_radius, 20);
+        typedArray.recycle();
         init();
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
 
     public void init() {
-        paint = new Paint();
-        paint.setAntiAlias(true); //消除锯齿
-        paint.setStrokeWidth(ringWidth);
-        paint.setStyle(Paint.Style.STROKE);  //绘制空心圆或 空心矩形,只显示边缘的线，不显示内部
+        ringPaint = new Paint();
+        ringPaint.setAntiAlias(true); //消除锯齿
+        ringPaint.setStrokeWidth(radius);
+        ringPaint.setStyle(Paint.Style.STROKE);  //绘制空心圆或 空心矩形,只显示边缘的线，不显示内部
+
+        maskPaint = new Paint();
+        maskPaint.setAntiAlias(true); //消除锯齿
+        maskPaint.setStrokeWidth(radius);
+        maskPaint.setStyle(Paint.Style.STROKE);  //绘制空心圆或 空心矩形,只显示边缘的线，不显示内部
+        maskPaint.setColor(Color.parseColor("#332a2a2a"));
+
+        emptyPaint = new Paint();
+        emptyPaint.setAntiAlias(true); //消除锯齿
+        emptyPaint.setStrokeWidth(radius);
+        emptyPaint.setStyle(Paint.Style.STROKE);  //绘制空心圆或 空心矩形,只显示边缘的线，不显示内部
+        emptyPaint.setColor(Color.parseColor("#F0F1F6"));
     }
 
-
-    private int progress = 0;
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (rect == null)
+            initShader();
+        int angle = (int) (progress * 360);
+
+        drawBackground(canvas);
+
+        if (progress == 0) {
+            drawEmtpyRing(canvas);
+            return;
+        }
 
         long s1 = System.currentTimeMillis();
-        int loop = progress / 360;
-        int remain = progress % 360;
+        int loop = angle / 360;
+        int remain = angle % 360;
 
-        for (int i = 1; i <= loop; i++) {
-            Log.e("onDraw", "onDraw.draw ring:" + i);
-            drawProgressRing(canvas, i % 2 != 0 ? colorsForSingle : colorsForDouble, 359, i == 1, false);
-        }
+        if (loop > 0)
+            drawFullRing(canvas, remain > 0);
+
         long s2 = System.currentTimeMillis();
+
         if (remain > 0) {
-            Log.e("onDraw", "onDraw.draw remain");
-            drawProgressRing(canvas, (loop) % 2 == 0 ? colorsForSingle : colorsForDouble, remain, loop == 0, false);
+            drawProgressRing(canvas, remain);
         }
         long s3 = System.currentTimeMillis();
-        Log.e("time", "draw loop=:" + (s2 - s1));
-        Log.e("time", "draw remain=" + (s3 - s2));
+        Log.e("time", "draw full ring=:" + (s2 - s1));
+        Log.e("time", "draw progress ring=" + (s3 - s2));
         Log.e("time", "------------------------------");
     }
 
-
-    public void drawFullRing(){
-
+    private void initShader() {
+        center = new PointF(getWidth() / 2f, getHeight() / 2f);
+        rect = new RectF(radius / 2f, radius / 2f, getWidth() - radius / 2f, getHeight() - radius / 2f);
+        //设置渐变
+        Shader sweepGradient = new SweepGradient(center.x, center.y, colors, null);
+        //按照圆心旋转
+        Matrix matrix = new Matrix();
+        matrix.setRotate(-90, center.x, center.y);
+        sweepGradient.setLocalMatrix(matrix);
+        ringPaint.setShader(sweepGradient);
     }
 
-    public void drawProgressRing(final Canvas canvas, int[] colors, final int angle, boolean first, boolean shadow) {
+
+    public void drawBackground(Canvas canvas) {
+        canvas.drawCircle(center.x, center.y, center.x - radius / 2f, emptyPaint);
+    }
+
+    public void drawEmtpyRing(Canvas canvas) {
+        Paint paint = new Paint();
+        paint.setColor(colors[0]);
+        canvas.drawCircle(center.x, radius / 2f, radius / 2f, paint);
+    }
+
+    public void drawFullRing(Canvas canvas, boolean needGrayMask) {
+        canvas.drawCircle(center.x, center.y, center.x - radius / 2f, ringPaint);
+        if (needGrayMask)
+            canvas.drawCircle(center.x, center.y, center.x - radius / 2f, maskPaint);
+    }
+
+    public void drawProgressRing(final Canvas canvas, final int angle) {
 
         long s1 = System.currentTimeMillis();
-
 
         Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         final Canvas bitmapCanvas = new Canvas(bitmap);
 
         long s2 = System.currentTimeMillis();
-
-        final RectF rect = new RectF(ringWidth / 2f, ringWidth / 2f, getWidth() - ringWidth / 2f, getHeight() - ringWidth / 2f);
-        //设置渐变
-        sweepGradient = new SweepGradient(getWidth() / 2f, getHeight() / 2f, colors, null);
-        //按照圆心旋转
-        Matrix matrix = new Matrix();
-        matrix.setRotate(-90, getWidth() / 2f, getHeight() / 2f);
-        sweepGradient.setLocalMatrix(matrix);
-        paint.setShader(sweepGradient);
-
-        if (shadow) {
-            RadialGradient mRadialGradient = new RadialGradient(getWidth() / 2f,
-                    getHeight() / 2f,
-                    getWidth() / 2f + 50,
-                    new int[]{Color.BLACK, Color.WHITE},
-                    null,
-                    Shader.TileMode.MIRROR);
-            Paint paintShadow = new Paint();
-            paintShadow.setShader(mRadialGradient);
-            RectF rectShadow = new RectF(-25, -25, getWidth() + 25, getHeight() + 25);
-            canvas.drawArc(rectShadow, -90, angle, true, paintShadow);
-//            canvas.drawCircle(getWidth() / 2f, getHeight() / 2f, getWidth() / 2f + 20, paintShadow);
-        }
-
-
-        long s2_2 = System.currentTimeMillis();
-
-//        canvas.drawArc(rect, -90, angle, false, paint);
-
-        long s2_3 = System.currentTimeMillis();
-        bitmapCanvas.drawArc(rect, -90, angle, false, paint);
+        bitmapCanvas.drawArc(rect, -90, angle, false, ringPaint);
 
         long s3 = System.currentTimeMillis();
 
@@ -136,8 +158,7 @@ public class ProgressRing extends View {
         int tailColor = bitmap.getPixel((int) pointTail.x, (int) pointTail.y);
 
 
-        if (first)
-            drawBall(bitmapCanvas, -90, headColor);
+        drawBall(bitmapCanvas, -90, headColor);
         drawBall(bitmapCanvas, -90 + angle, tailColor);
 
         long s4 = System.currentTimeMillis();
@@ -146,9 +167,7 @@ public class ProgressRing extends View {
         long s5 = System.currentTimeMillis();
 
         Log.e("time", "create bitmap=" + (s2 - s1));
-        Log.e("time", "draw path,shader=" + (s2_2 - s2));
-        Log.e("time", "draw path,on canvas=" + (s2_3 - s2_2));
-        Log.e("time", "draw path,on bitmap canvas=" + (s3 - s2_3));
+        Log.e("time", "draw arc=" + (s3 - s2));
         Log.e("time", "draw ball=" + (s4 - s3));
         Log.e("time", "draw bitmap=" + (s5 - s4));
 
@@ -183,50 +202,45 @@ public class ProgressRing extends View {
         Paint paint = new Paint();
         paint.setColor(color);
         paint.setAntiAlias(true); //消除锯齿
-        canvas.drawCircle((int) pointF.x, (int) pointF.y, ringWidth / 2f, paint);
+        canvas.drawCircle((int) pointF.x, (int) pointF.y, radius / 2f, paint);
     }
 
 
     private PointF calcEdgePoint(int angle) {
-        float x0 = getWidth() / 2f;
+        float x0 = center.x;
         float y0 = getHeight() / 2f;
-        float r = getWidth() / 2f - ringWidth / 2f;
+        float r = center.y - radius / 2f;
         double x1 = x0 + r * Math.cos(Math.toRadians(angle));
         double y1 = y0 + r * Math.sin(Math.toRadians(angle));
         return new PointF((float) x1, (float) y1);
     }
 
 
-    public int getProgress() {
+    public float getProgress() {
         return progress;
     }
 
-    public void setProgress(int progress) {
+    public void setProgress(float progress) {
         this.progress = progress;
         invalidate();
     }
 
-    /**
-     * Canvas.drawArc太耗时,不建议使用动画
-     */
-    ValueAnimator valueAnimator;
 
-    @Deprecated
-    public void setProgressWithAnim(int progress) {
+    public void setProgress(float progress, int animDuration) {
 
-        if (valueAnimator != null && valueAnimator.isRunning()) {
-            valueAnimator.cancel();
+        if (progressAnimator != null && progressAnimator.isRunning()) {
+            progressAnimator.cancel();
         }
 
-        valueAnimator = ValueAnimator.ofInt(this.progress, progress);
-        valueAnimator.setDuration(5000);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        progressAnimator = ValueAnimator.ofFloat(this.progress, progress);
+        progressAnimator.setDuration(animDuration);
+        progressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                ProgressRing.this.progress = (int) animation.getAnimatedValue();
+                ProgressRing.this.progress = (Float) animation.getAnimatedValue();
                 invalidate();
             }
         });
-        valueAnimator.start();
+        progressAnimator.start();
     }
 }

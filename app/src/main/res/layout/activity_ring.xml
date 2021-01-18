@@ -15,7 +15,9 @@
         <cn.xzbenben.ring.ProgressRing
             android:id="@+id/progress"
             android:layout_width="300dp"
-            android:layout_height="300dp" />
+            android:layout_height="300dp"
+            app:progress="0.3"
+            app:radius="20dp" />
 
     </LinearLayout>
 
@@ -27,10 +29,10 @@
         android:background="#f00" />
 
     <Button
-        android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
-        android:text="增加90度"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:onClick="addProgress"
-        android:layout_height="wrap_content"/>
+        android:text="增加90度" />
 
 </RelativeLayout>
